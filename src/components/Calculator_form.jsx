@@ -192,7 +192,7 @@ const Test = () => {
         className="border-[1px] text-[23px] rounded-lg border-red-300 mt-5"
       >
         <h1 className="p-4 w-full border-b-[1px] border-red-300">
-          Fee Structure
+        Illustration
         </h1>
 
         <table className=" w-auto border-[1px] border-gray-200 m-[2%]">
@@ -346,7 +346,7 @@ const Test = () => {
              {/* ---------------------------------------s4------------------------------------------- */}
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
-              Less : Fixed Management Fees (@ 0%)		              
+              Less : Fixed Management Fees (@ {inputs.AMC}%)		              
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
@@ -382,7 +382,7 @@ const Test = () => {
              {/* ---------------------------------------s4------------------------------------------- */}
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
-              Less : Performance Fees (@ 15% after hurdle rate of 0%)	              
+              Less : Performance Fees (@ {inputs.Performance_fee}% after hurdle rate of {inputs.hurdle_rate}%)	              
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
