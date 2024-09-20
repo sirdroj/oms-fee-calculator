@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap');
+
+html {
+    scroll-behavior: smooth;
+  }
+.lexend-100 {
+    font-family: "Lexend", system-ui;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+  }
+  
+  .lexend-400 {
+    font-family: "Lexend", system-ui;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .lexend-900 {
+    font-family: "Lexend", system-ui;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+  }
+  .parallax {
+    background-image: url('https://img.freepik.com/premium-photo/abstract-black-white-geometric-background-study-shapes_996135-32795.jpg?w=900');
+    background-attachment: fixed; /* Keep fixed background to work with parallax effect */
+    background-position: top 200px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* width:; */
+    height: 80vh; /* Adjust based on how much space you want */
+  }
+  @media (max-width: 768px) {
+    .parallax {
+      background-position: center 50px; /* Adjust for smaller screens */
+    }
+  }
