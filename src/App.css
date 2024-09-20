@@ -30,7 +30,7 @@ html {
     background-repeat: no-repeat;
     background-size: cover;
     /* width:; */
-    height: 80vh; /* Adjust based on how much space you want */
+    height: 40vh; /* Adjust based on how much space you want */
   }
   @media (max-width: 768px) {
     .parallax {
