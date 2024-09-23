@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 
+const formatNumberIndian = (num) => {
+  return new Intl.NumberFormat('en-IN').format(num);
+};
+
 const Test = () => {
-  let p = 10000000;
+  let p = 5000000;
   let MFee=2.5;
   let OthFee=0.5;
   let bkFee=0.2;
@@ -38,16 +42,16 @@ const Test = () => {
 
     for (const year of yearList) {
 
-      let treturn = (tp * inputs.returns[year]) / 100;
+      let treturn = Math.round((tp * inputs.returns[year]) / 100);
       let tgrossval = treturn + tp;
-      let brokrageFee=tgrossval*bkFee/100;
+      let brokrageFee=Math.round(tgrossval*bkFee/100);
       let portfolioAfterBrokrage=tgrossval-brokrageFee
-      let custodyFee=tgrossval*OthFee/100;
+      let custodyFee=Math.round(tgrossval*OthFee/100);
       let portfolioAfterCustody=portfolioAfterBrokrage-custodyFee
-      let managementFee=portfolioAfterCustody*MFee/100
-      let gstMfee=managementFee*0.18
+      let managementFee=Math.round(portfolioAfterCustody*MFee/100)
+      let gstMfee=Math.round(managementFee*0.18)
       let portfolioafterMfee=portfolioAfterCustody-managementFee-gstMfee
-      let hurdle=tp*inputs.hurdle_rate/100
+      let hurdle=Math.round(tp*inputs.hurdle_rate/100)
       
       let perfomanceFee=0
       if((portfolioafterMfee-hurdle-tp)>0){
@@ -219,7 +223,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.nav.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.nav).toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -229,7 +233,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.highWaterMarDuring.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.highWaterMarDuring).toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -268,7 +272,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.ReturnAmount.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.ReturnAmount).toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -279,7 +283,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.grossValue.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.grossValue).toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -296,7 +300,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.brokrageFee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.brokrageFee)?.toLocaleString()}
                
                 </td>
               ))}
@@ -310,7 +314,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.portfolioAfterBrokrage?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.portfolioAfterBrokrage)?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -324,7 +328,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.custodyFee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.custodyFee)?.toLocaleString()}
                 
                 </td>
               ))}
@@ -339,7 +343,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.portfolioAfterCustody?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.portfolioAfterCustody)?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -350,7 +354,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.managementFee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.managementFee)?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -360,7 +364,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.gstMfee?.toLocaleString()}
+                  {formatNumberIndian(datas[year])?.gstMfee?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -374,7 +378,7 @@ const Test = () => {
          </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.portfolioafterMfee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.portfolioafterMfee)?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -386,7 +390,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.perfomanceFee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.perfomanceFee)?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -396,7 +400,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.gstPerfomanceFee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.gstPerfomanceFee)?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -405,7 +409,7 @@ const Test = () => {
               Net Value of the Portfolio at end of the year	              </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.portfolioAfterPfee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.portfolioAfterPfee)?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -414,7 +418,7 @@ const Test = () => {
               Net return to client	              </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.netReturn?.toLocaleString()}%
+                  {formatNumberIndian(datas[year]?.netReturn)?.toLocaleString()}%
                 </td>
               ))}
             </tr>
@@ -443,7 +447,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.portfolioAfterPfee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.portfolioAfterPfee)?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -453,7 +457,7 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {datas[year]?.portfolioAfterPfee?.toLocaleString()}
+                  {formatNumberIndian(datas[year]?.portfolioAfterPfee)?.toLocaleString()}
                 </td>
               ))}
             </tr>
