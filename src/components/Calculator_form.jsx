@@ -35,12 +35,20 @@ const Test = () => {
     let newDatas = {};
     let tp = p; // NAV at the beginning of the period
 
-    let MFee = inputs.AMC;
     let OthFee = 0.25;
     let bkFee = 0.25;
 
+
+    let MFee = parseInt(inputs.AMC)?parseInt(inputs.AMC):0;
+    let hRate= parseInt(inputs.hurdle_rate)?parseInt(inputs.AMC):0;
+    let pFee= parseInt(inputs.Performance_fee)?parseInt(inputs.AMC):0;
+    
+    
     for (const year of yearList) {
-      let treturn = Math.round((tp * inputs.returns[year]) / 100);
+      let returnPercent=parseInt(inputs.returns[year])?parseInt(inputs.AMC):0;
+
+
+      let treturn = Math.round((tp * returnPercent) / 100);
       let tgrossval = treturn + tp;
       let brokrageFee = Math.round((tgrossval * bkFee) / 100);
       let portfolioAfterBrokrage = tgrossval - brokrageFee;
@@ -49,12 +57,12 @@ const Test = () => {
       let managementFee = Math.round((portfolioAfterCustody * MFee) / 100);
       let gstMfee = Math.round(managementFee * 0.18);
       let portfolioafterMfee = portfolioAfterCustody - managementFee - gstMfee;
-      let hurdle = Math.round((tp * inputs.hurdle_rate) / 100);
+      let hurdle = Math.round((tp * hRate) / 100);
 
       let perfomanceFee = 0;
       if (portfolioafterMfee - hurdle - tp > 0) {
         perfomanceFee =
-          ((portfolioafterMfee - hurdle - tp) * inputs.Performance_fee) / 100;
+          ((portfolioafterMfee - hurdle - tp) * pFee) / 100;
         // perfomanceFee=hurdle
       }
       let gstPerfomanceFee = perfomanceFee * 0.18;
@@ -89,28 +97,7 @@ const Test = () => {
     calculateDatas();
   }, [inputs]);
 
-  // Handle input changes
-  // function handleChange(name, value, year) {
-  //   if(!value){
-  //     value=0
-  //   }
-  //   if(value.is)
-   
-  //   if (year) {
-  //     setInputs((prevState) => ({
-  //       ...prevState,
-  //       returns: {
-  //         ...prevState.returns,
-  //         [year]: value,
-  //       },
-  //     }));
-  //   } else {
-  //     setInputs((prevState) => ({
-  //       ...prevState,
-  //       [name]: value,
-  //     }));
-  //   }
-  // }
+ 
 
   function handleChange(name, value, year) {
     if (value === null || value === undefined) {
