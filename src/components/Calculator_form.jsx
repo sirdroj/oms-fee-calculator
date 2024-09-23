@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
 
 const formatNumberIndian = (num) => {
-  return new Intl.NumberFormat('en-IN').format(num);
+  return new Intl.NumberFormat("en-IN").format(num);
 };
 
 const Test = () => {
   let p = 5000000;
-  let MFee=2.5;
-  let OthFee=0.5;
-  let bkFee=0.2;
-  const [method,setmethod]=useState(0);
+  let MFee = 2.5;
+  let OthFee = 0.5;
+  let bkFee = 0.2;
+  const [method, setmethod] = useState(0);
 
   // Input states for AMC, Performance Fee, etc.
   const [inputs, setInputs] = useState({
-    AMC: 0,
-    Performance_fee: 0,
-    hurdle_rate: 0,
+    AMC: null,
+    Performance_fee: null,
+    hurdle_rate: null,
     returns: {
       "Year 1": 10,
       "Year 2": 10,
@@ -35,49 +35,48 @@ const Test = () => {
     let newDatas = {};
     let tp = p; // NAV at the beginning of the period
 
-    let MFee=inputs.AMC;
-    let OthFee=0.25;
-    let bkFee=0.25;
-   
+    let MFee = inputs.AMC;
+    let OthFee = 0.25;
+    let bkFee = 0.25;
 
     for (const year of yearList) {
-
       let treturn = Math.round((tp * inputs.returns[year]) / 100);
       let tgrossval = treturn + tp;
-      let brokrageFee=Math.round(tgrossval*bkFee/100);
-      let portfolioAfterBrokrage=tgrossval-brokrageFee
-      let custodyFee=Math.round(tgrossval*OthFee/100);
-      let portfolioAfterCustody=portfolioAfterBrokrage-custodyFee
-      let managementFee=Math.round(portfolioAfterCustody*MFee/100)
-      let gstMfee=Math.round(managementFee*0.18)
-      let portfolioafterMfee=portfolioAfterCustody-managementFee-gstMfee
-      let hurdle=Math.round(tp*inputs.hurdle_rate/100)
-      
-      let perfomanceFee=0
-      if((portfolioafterMfee-hurdle-tp)>0){
-        perfomanceFee=(portfolioafterMfee-hurdle-tp)*inputs.Performance_fee/100
+      let brokrageFee = Math.round((tgrossval * bkFee) / 100);
+      let portfolioAfterBrokrage = tgrossval - brokrageFee;
+      let custodyFee = Math.round((tgrossval * OthFee) / 100);
+      let portfolioAfterCustody = portfolioAfterBrokrage - custodyFee;
+      let managementFee = Math.round((portfolioAfterCustody * MFee) / 100);
+      let gstMfee = Math.round(managementFee * 0.18);
+      let portfolioafterMfee = portfolioAfterCustody - managementFee - gstMfee;
+      let hurdle = Math.round((tp * inputs.hurdle_rate) / 100);
+
+      let perfomanceFee = 0;
+      if (portfolioafterMfee - hurdle - tp > 0) {
+        perfomanceFee =
+          ((portfolioafterMfee - hurdle - tp) * inputs.Performance_fee) / 100;
         // perfomanceFee=hurdle
       }
-      let gstPerfomanceFee=perfomanceFee*0.18
-      let portfolioAfterPfee=portfolioafterMfee-perfomanceFee-gstPerfomanceFee
-      let netReturn=(portfolioAfterPfee-tp)*100/tp
+      let gstPerfomanceFee = perfomanceFee * 0.18;
+      let portfolioAfterPfee =
+        portfolioafterMfee - perfomanceFee - gstPerfomanceFee;
+      let netReturn = ((portfolioAfterPfee - tp) * 100) / tp;
       newDatas[year] = {
         nav: tp,
         highWaterMarDuring: tp,
         ReturnAmount: treturn,
         grossValue: tgrossval,
-        brokrageFee:brokrageFee,
-        portfolioAfterBrokrage:portfolioAfterBrokrage,
-        custodyFee:custodyFee,
-        portfolioAfterCustody:portfolioAfterCustody,
-        managementFee:managementFee,
-        gstMfee:gstMfee,
-        portfolioafterMfee:portfolioafterMfee,
-        perfomanceFee:perfomanceFee,
-        gstPerfomanceFee:gstPerfomanceFee,
-        portfolioAfterPfee:portfolioAfterPfee,
-        netReturn:netReturn
-
+        brokrageFee: brokrageFee,
+        portfolioAfterBrokrage: portfolioAfterBrokrage,
+        custodyFee: custodyFee,
+        portfolioAfterCustody: portfolioAfterCustody,
+        managementFee: managementFee,
+        gstMfee: gstMfee,
+        portfolioafterMfee: portfolioafterMfee,
+        perfomanceFee: perfomanceFee,
+        gstPerfomanceFee: gstPerfomanceFee,
+        portfolioAfterPfee: portfolioAfterPfee,
+        netReturn: netReturn,
       };
       tp = portfolioAfterPfee; // Update tp for the next year
     }
@@ -87,16 +86,37 @@ const Test = () => {
 
   // Update datas whenever inputs change
   useEffect(() => {
-
     calculateDatas();
   }, [inputs]);
 
   // Handle input changes
+  // function handleChange(name, value, year) {
+  //   if(!value){
+  //     value=0
+  //   }
+  //   if(value.is)
+   
+  //   if (year) {
+  //     setInputs((prevState) => ({
+  //       ...prevState,
+  //       returns: {
+  //         ...prevState.returns,
+  //         [year]: value,
+  //       },
+  //     }));
+  //   } else {
+  //     setInputs((prevState) => ({
+  //       ...prevState,
+  //       [name]: value,
+  //     }));
+  //   }
+  // }
+
   function handleChange(name, value, year) {
-    if (!value) {
+    if (value === null || value === undefined) {
       value = 0;
     }
-    if (isNaN(value)) {
+    if (value!="-" && isNaN(value)) {
       return;
     }
     if (year) {
@@ -135,16 +155,18 @@ const Test = () => {
             <div className="flex items-center">
               <input
                 type="text"
-                id="quantity-input"
+              
+                // id="quantity-input"
                 data-input-counter
                 aria-describedby="helper-text-explanation"
                 className="w-50px mx-2 text-black h-11 border-[1px] outline-red-400 rounded-lg text-center text-sm  block  py-2 bg-red-700 bg-opacity-10 border-red-200 placeholder-gray-400"
                 placeholder="0"
                 value={inputs.AMC}
-                onChange={(e) => handleChange("AMC", parseInt(e.target.value))}
+                onChange={(e) => handleChange("AMC", e.target.value)}
                 required
               />
               %
+              
             </div>
           </div>
           <div className="flex items-center justify-evenly w-max p-10 m-2">
@@ -153,14 +175,14 @@ const Test = () => {
               <div>
                 <input
                   type="text"
-                  id="quantity-input"
+                  // id="quantity-input"
                   data-input-counter
                   aria-describedby="helper-text-explanation"
                   className="w-50px mx-2 text-black h-11 border-[1px] outline-red-400 rounded-lg text-center text-sm block py-2 bg-red-700 bg-opacity-10 border-red-200 placeholder-gray-400"
                   placeholder="0"
                   value={inputs.hurdle_rate}
                   onChange={(e) =>
-                    handleChange("hurdle_rate", parseInt(e.target.value))
+                    handleChange("hurdle_rate", e.target.value)
                   }
                   required
                 />
@@ -172,14 +194,14 @@ const Test = () => {
               <div>
                 <input
                   type="text"
-                  id="quantity-input"
+                  // id="quantity-input"
                   data-input-counter
                   aria-describedby="helper-text-explanation"
                   className="w-50px mx-2 text-black h-11 border-[1px] outline-red-400 rounded-lg text-center text-sm block py-2 bg-red-700 bg-opacity-10 border-red-200 placeholder-gray-400"
                   placeholder="0"
                   value={inputs.Performance_fee}
                   onChange={(e) =>
-                    handleChange("Performance_fee", parseInt(e.target.value))
+                    handleChange("Performance_fee", e.target.value)
                   }
                   required
                 />
@@ -196,7 +218,7 @@ const Test = () => {
         className="border-[1px] text-[23px] rounded-lg border-red-300 mt-5"
       >
         <h1 className="p-4 w-full border-b-[1px] border-red-300">
-        Illustration
+          Illustration
         </h1>
 
         <table className=" w-auto border-[1px] border-gray-200 m-[2%]">
@@ -213,7 +235,10 @@ const Test = () => {
           <tbody>
             {/* AT THE BEGINNING OF THE YEAR */}
             <tr>
-              <td colSpan={6} className="te text-center border-b-[1px] text-[17px] font-bold py-2">
+              <td
+                colSpan={6}
+                className="te text-center border-b-[1px] text-[17px] font-bold py-2"
+              >
                 AT THE BEGINNING OF THE YEAR
               </td>
             </tr>
@@ -233,14 +258,19 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.highWaterMarDuring).toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.highWaterMarDuring
+                  ).toLocaleString()}
                 </td>
               ))}
             </tr>
 
             {/* DURING THE YEAR */}
             <tr>
-              <td colSpan={6} className="te text-center border-b-[1px] border-t-[1px] border-t-black text-[17px] font-bold py-2">
+              <td
+                colSpan={6}
+                className="te text-center border-b-[1px] border-t-[1px] border-t-black text-[17px] font-bold py-2"
+              >
                 DURING THE YEAR
               </td>
             </tr>
@@ -256,7 +286,7 @@ const Test = () => {
                       placeholder="0"
                       value={inputs.returns[year]}
                       onChange={(e) =>
-                        handleChange(null, parseInt(e.target.value), year)
+                        handleChange(null, e.target.value, year)
                       }
                       required
                     />
@@ -272,15 +302,15 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.ReturnAmount).toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.ReturnAmount
+                  ).toLocaleString()}
                 </td>
               ))}
             </tr>
 
             <tr className="text-[14px] font-semibold border-b-[1px]">
-              <td className="border-l-[0px] pl-2">
-                Gross Value (A + C) … (D)
-              </td>
+              <td className="border-l-[0px] pl-2">Gross Value (A + C) … (D)</td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
                   {formatNumberIndian(datas[year]?.grossValue).toLocaleString()}
@@ -300,8 +330,9 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.brokrageFee)?.toLocaleString()}
-               
+                  {formatNumberIndian(
+                    datas[year]?.brokrageFee
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
@@ -314,53 +345,63 @@ const Test = () => {
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.portfolioAfterBrokrage)?.toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.portfolioAfterBrokrage
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
             {/* ---------------------------------------s3------------------------------------------- */}
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6">
               <td className="border-l-[0px] p-2">
-              Less: Operating Expenses i.e. Non-Contract Note Charges @0.25% (FA, Custody, Legal, Audit, etc.)
+                Less: Operating Expenses i.e. Non-Contract Note Charges @0.25%
+                (FA, Custody, Legal, Audit, etc.)
                 <p className=" text-gray-400 text-[12px] leading-5">
-                The max charge under this head is 0.50% of AUM and assumed on average of beginning and ending AUM, for illustration purposes only.
+                  The max charge under this head is 0.50% of AUM and assumed on
+                  average of beginning and ending AUM, for illustration purposes
+                  only.
                 </p>
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.custodyFee)?.toLocaleString()}
-                
+                  {formatNumberIndian(
+                    datas[year]?.custodyFee
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 border-b-black">
               <td className="border-l-[0px] p-2">
-              Gross Value of the Portfolio at the end of the year
+                Gross Value of the Portfolio at the end of the year
                 <p className=" text-gray-400 text-[12px] leading-5">
-                AFTER Contract Note Charges, AFTER Operating Expenses
-
+                  AFTER Contract Note Charges, AFTER Operating Expenses
                 </p>
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.portfolioAfterCustody)?.toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.portfolioAfterCustody
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
-             {/* ---------------------------------------s4------------------------------------------- */}
+            {/* ---------------------------------------s4------------------------------------------- */}
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
-              Less : Fixed Management Fees (@ {inputs.AMC}%)		              
+                Less : Fixed Management Fees (@ {inputs.AMC}%)
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.managementFee)?.toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.managementFee
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
-              Less : GST on Fixed Management Fees (@ 18% of Fixed Management Fees )		              
+                Less : GST on Fixed Management Fees (@ 18% of Fixed Management
+                Fees )
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
@@ -370,69 +411,79 @@ const Test = () => {
             </tr>
             <tr className="text-[14px] font-semibold border-b-[1px] border-b-black	leading-6 ">
               <td className="border-l-[0px] p-2">
-              Portfolio Value AFTER fixed Management Fees
-              <p className=" text-gray-400 text-[12px] leading-5">
-              BEFORE Performance Fees	
-
+                Portfolio Value AFTER fixed Management Fees
+                <p className=" text-gray-400 text-[12px] leading-5">
+                  BEFORE Performance Fees
                 </p>
-         </td>
-              {yearList.map((year) => (
-                <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.portfolioafterMfee)?.toLocaleString()}
-                </td>
-              ))}
-            </tr>
-            
-             {/* ---------------------------------------s4------------------------------------------- */}
-            <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
-              <td className="border-l-[0px] p-2">
-              Less : Performance Fees (@ {inputs.Performance_fee}% after hurdle rate of {inputs.hurdle_rate}%)	              
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.perfomanceFee)?.toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.portfolioafterMfee
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
+
+            {/* ---------------------------------------s4------------------------------------------- */}
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
-              Less : GST on Performance fees (@ 18% of Performance Fees )		              
+                Less : Performance Fees (@ {inputs.Performance_fee}% after
+                hurdle rate of {inputs.hurdle_rate}%)
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.gstPerfomanceFee)?.toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.perfomanceFee
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
-              Net Value of the Portfolio at end of the year	              </td>
+                Less : GST on Performance fees (@ 18% of Performance Fees )
+              </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.portfolioAfterPfee)?.toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.gstPerfomanceFee
+                  )?.toLocaleString()}
+                </td>
+              ))}
+            </tr>
+            <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
+              <td className="border-l-[0px] p-2">
+                Net Value of the Portfolio at end of the year{" "}
+              </td>
+              {yearList.map((year) => (
+                <td key={year} className="border-l-[1px] text-center">
+                  {formatNumberIndian(
+                    datas[year]?.portfolioAfterPfee
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 border-b-black">
-              <td className="border-l-[0px] p-2">
-              Net return to client	              </td>
+              <td className="border-l-[0px] p-2">Net return to client </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.netReturn)?.toLocaleString()}%
+                  {formatNumberIndian(datas[year]?.netReturn)?.toLocaleString()}
+                  %
                 </td>
               ))}
             </tr>
             {/* ---------------------------------------s5------------------------------------------- */}
             <tr className="text-[14px] font-semibold border-b-[0px] 	leading-6">
               <td className="border-l-[0px] p-2">
-              <p>Accounts closed here for the year.</p>
+                <p>Accounts closed here for the year.</p>
 
                 <i className=" text-gray-400 text-[12px] leading-5">
-                Think of it as if PMS account is 
-                closed / redeemed and reopened immediately. 
-                <u>But HWM is carried forward in reality so 
-                  any previous losses are carried ahead before
-                   performance fees are billed.</u>
+                  Think of it as if PMS account is closed / redeemed and
+                  reopened immediately.
+                  <u>
+                    But HWM is carried forward in reality so any previous losses
+                    are carried ahead before performance fees are billed.
+                  </u>
                 </i>
               </td>
               {yearList.map((year) => (
@@ -443,33 +494,40 @@ const Test = () => {
             </tr>
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6">
               <td className="border-l-[0px] p-2">
-              <p>Beginning NAV for next year … (A for next year)	</p>
+                <p>Beginning NAV for next year … (A for next year) </p>
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.portfolioAfterPfee)?.toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.portfolioAfterPfee
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6">
               <td className="border-l-[0px] p-2">
-              <p>High Water Mark (HWM) for next year … (B for next year)		</p>
+                <p>High Water Mark (HWM) for next year … (B for next year) </p>
               </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.portfolioAfterPfee)?.toLocaleString()}
+                  {formatNumberIndian(
+                    datas[year]?.portfolioAfterPfee
+                  )?.toLocaleString()}
                 </td>
               ))}
             </tr>
           </tbody>
         </table>
-        
       </section>
       <div className="text-[14px] p-4 leading-5 font-semibold">
-
-        <h2><u>Notes</u></h2>
-        <i className="text-gray-400">1)This is a simplified example assuming no cash inflow/outflow during the year. Actual fees will vary based on actual numbers.</i>
-        </div>
+        <h2>
+          <u>Notes</u>
+        </h2>
+        <i className="text-gray-400">
+          1)This is a simplified example assuming no cash inflow/outflow during
+          the year. Actual fees will vary based on actual numbers.
+        </i>
+      </div>
     </form>
   );
 };

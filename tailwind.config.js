@@ -23,5 +23,8 @@ export default {
     },
   },
   plugins: [],
+  corePlugins: {
+    appearance: false, // Disable appearance utility
+  },
 }
 
