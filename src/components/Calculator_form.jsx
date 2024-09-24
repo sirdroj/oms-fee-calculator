@@ -6,6 +6,7 @@ const formatNumberIndian = (num) => {
 
 const Test = () => {
   let p = 5000000;
+  let HWM=p
   let MFee = 2.5;
   let OthFee = 0.5;
   let bkFee = 0.2;
@@ -35,6 +36,7 @@ const Test = () => {
   const calculateDatas = () => {
     let newDatas = {};
     let tp = p; // NAV at the beginning of the period
+    let tHWM=HWM
 
     let OthFee = 0.25;
     let bkFee = 0.25;
@@ -52,7 +54,7 @@ const Test = () => {
 
       let treturn = Math.round((tp * returnPercent) / 100);
       let tgrossval = treturn + tp;
-      let hurdle = Math.round((tp * hRate) / 100);
+      let hurdle = Math.round((tHWM * hRate) / 100);
       let brokrageFee = Math.round((tgrossval * bkFee) / 100);
       let portfolioAfterBrokrage = tgrossval - brokrageFee;
       let custodyFee = Math.round((tgrossval * OthFee) / 100);
@@ -69,7 +71,7 @@ const Test = () => {
       if (netprofrofit_before_perfomance_fee-hurdle> 0) {
         // perfomanceFee = Math.round(netprofrofit_before_perfomance_fee-hurdle*10) ;
         // perfomanceFee=hurdle
-        perfomanceFee = Math.round((netprofrofit_before_perfomance_fee-hurdle)*pFee/100) ;
+        perfomanceFee = Math.round((netprofrofit_before_perfomance_fee-hurdle+tp-tHWM)*pFee/100) ;
       }
       // let gstPerfomanceFee = perfomanceFee * 0.18;
       // let portfolioAfterPfee =
@@ -78,9 +80,40 @@ const Test = () => {
       tp+netprofrofit_before_perfomance_fee - perfomanceFee ;
       
       let netReturn = ((portfolioAfterPfee - tp) * 100) / tp;
+
+
+      function get_HWM(){
+
+        if(year=="Year 1"){
+          if(portfolioafterMfee<tp){
+            return tp
+          }
+          else{
+            return portfolioafterMfee
+          }
+        }
+
+        let result=null;
+        if(netReturn>0){
+          if(perfomanceFee==0){
+            result=tp
+          }
+          else{
+            result=tgrossval-brokrageFee-custodyFee-perfomanceFee
+          }
+        }
+        else{
+          result=tHWM
+        }
+
+        return Math.max(result,tHWM)
+      }
+      let highWaterMarNext=get_HWM()
+
+      
       newDatas[year] = {
         nav: tp,
-        highWaterMarDuring: tp,
+        highWaterMarDuring: tHWM,
         ReturnAmount: treturn,
         grossValue: tgrossval,
         brokrageFee: brokrageFee,
@@ -94,8 +127,12 @@ const Test = () => {
         // gstPerfomanceFee: gstPerfomanceFee,
         portfolioAfterPfee: portfolioAfterPfee,
         netReturn: netReturn,
+        highWaterMarNext: highWaterMarNext
       };
+
+      tHWM=highWaterMarNext
       tp = portfolioAfterPfee; // Update tp for the next year
+      
     }
 
     setDatas(newDatas); // Update the 'datas' state
@@ -508,7 +545,7 @@ const Test = () => {
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
                   {formatNumberIndian(
-                    datas[year]?.portfolioAfterPfee
+                    datas[year]?.highWaterMarNext
                   )?.toLocaleString()}
                 </td>
               ))}
