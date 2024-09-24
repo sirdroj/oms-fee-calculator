@@ -29,6 +29,7 @@ const Test = () => {
   const [datas, setDatas] = useState({});
 
   const yearList = ["Year 1", "Year 2", "Year 3", "Year 4", "Year 5"];
+  let hRate= parseInt(inputs.hurdle_rate)?inputs.hurdle_rate:0;
 
   // Function to calculate and update the 'datas' based on the inputs
   const calculateDatas = () => {
@@ -41,8 +42,8 @@ const Test = () => {
 
     // let MFee = inputs.AMC?inputs.AMC:0;
     let MFee = parseInt(inputs.AMC)?inputs.AMC:0;
-    let hRate= parseInt(inputs.hurdle_rate)?parseInt(inputs.AMC):0;
-    let pFee= parseInt(inputs.Performance_fee)?parseInt(inputs.AMC):0;
+    let hRate= parseInt(inputs.hurdle_rate)?inputs.hurdle_rate:0;
+    let pFee= parseInt(inputs.Performance_fee)?inputs.Performance_fee:0;
     
     
     for (const year of yearList) {
@@ -51,24 +52,31 @@ const Test = () => {
 
       let treturn = Math.round((tp * returnPercent) / 100);
       let tgrossval = treturn + tp;
+      let hurdle = Math.round((tp * hRate) / 100);
       let brokrageFee = Math.round((tgrossval * bkFee) / 100);
       let portfolioAfterBrokrage = tgrossval - brokrageFee;
       let custodyFee = Math.round((tgrossval * OthFee) / 100);
       let portfolioAfterCustody = portfolioAfterBrokrage - custodyFee;
       let managementFee = Math.round((portfolioAfterCustody * MFee) / 100);
+      
       // let gstMfee = Math.round(managementFee * 0.18);
       let portfolioafterMfee = portfolioAfterCustody - managementFee;
-      let hurdle = Math.round((tp * hRate) / 100);
-
+      
       let perfomanceFee = 0;
-      if (portfolioafterMfee - hurdle - tp > 0) {
-        perfomanceFee =
-          ((portfolioafterMfee - hurdle - tp) * pFee) / 100;
+      let total_expense = brokrageFee + custodyFee + managementFee
+      let netprofrofit_before_perfomance_fee=treturn-total_expense 
+
+      if (netprofrofit_before_perfomance_fee-hurdle> 0) {
+        // perfomanceFee = Math.round(netprofrofit_before_perfomance_fee-hurdle*10) ;
         // perfomanceFee=hurdle
+        perfomanceFee = Math.round((netprofrofit_before_perfomance_fee-hurdle)*pFee/100) ;
       }
       // let gstPerfomanceFee = perfomanceFee * 0.18;
+      // let portfolioAfterPfee =
+      //   portfolioafterMfee - perfomanceFee ;
       let portfolioAfterPfee =
-        portfolioafterMfee - perfomanceFee ;
+      tp+netprofrofit_before_perfomance_fee - perfomanceFee ;
+      
       let netReturn = ((portfolioAfterPfee - tp) * 100) / tp;
       newDatas[year] = {
         nav: tp,
@@ -126,6 +134,7 @@ const Test = () => {
   return (
     <form className=" w- bg-white relative top-20 lg:top-[-100px] text-gray-700 lg:left-0 left-20 rounded-lg p-4 mx-10 border-[2px] overflow-visible">
       <h1 className="text-center lexend-400 w-full">Fees Calculator</h1>
+      {/* {hRate} */}
       <p className="text-base text-gray-900 text-center m-4">
         Below fee calculator will help determine how fees are calculated for
         your PMS account at Marathon Trends Advisory Private Limited.
