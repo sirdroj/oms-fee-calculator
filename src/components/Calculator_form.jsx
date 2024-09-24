@@ -39,13 +39,14 @@ const Test = () => {
     let bkFee = 0.25;
 
 
-    let MFee = parseInt(inputs.AMC)?parseInt(inputs.AMC):0;
+    // let MFee = inputs.AMC?inputs.AMC:0;
+    let MFee = parseInt(inputs.AMC)?inputs.AMC:0;
     let hRate= parseInt(inputs.hurdle_rate)?parseInt(inputs.AMC):0;
     let pFee= parseInt(inputs.Performance_fee)?parseInt(inputs.AMC):0;
     
     
     for (const year of yearList) {
-      let returnPercent=parseInt(inputs.returns[year])?parseInt(inputs.AMC):0;
+      let returnPercent=parseInt(inputs.returns[year])?inputs.returns[year]:0;
 
 
       let treturn = Math.round((tp * returnPercent) / 100);
@@ -55,8 +56,8 @@ const Test = () => {
       let custodyFee = Math.round((tgrossval * OthFee) / 100);
       let portfolioAfterCustody = portfolioAfterBrokrage - custodyFee;
       let managementFee = Math.round((portfolioAfterCustody * MFee) / 100);
-      let gstMfee = Math.round(managementFee * 0.18);
-      let portfolioafterMfee = portfolioAfterCustody - managementFee - gstMfee;
+      // let gstMfee = Math.round(managementFee * 0.18);
+      let portfolioafterMfee = portfolioAfterCustody - managementFee;
       let hurdle = Math.round((tp * hRate) / 100);
 
       let perfomanceFee = 0;
@@ -65,9 +66,9 @@ const Test = () => {
           ((portfolioafterMfee - hurdle - tp) * pFee) / 100;
         // perfomanceFee=hurdle
       }
-      let gstPerfomanceFee = perfomanceFee * 0.18;
+      // let gstPerfomanceFee = perfomanceFee * 0.18;
       let portfolioAfterPfee =
-        portfolioafterMfee - perfomanceFee - gstPerfomanceFee;
+        portfolioafterMfee - perfomanceFee ;
       let netReturn = ((portfolioAfterPfee - tp) * 100) / tp;
       newDatas[year] = {
         nav: tp,
@@ -79,10 +80,10 @@ const Test = () => {
         custodyFee: custodyFee,
         portfolioAfterCustody: portfolioAfterCustody,
         managementFee: managementFee,
-        gstMfee: gstMfee,
+        // gstMfee: gstMfee,
         portfolioafterMfee: portfolioafterMfee,
         perfomanceFee: perfomanceFee,
-        gstPerfomanceFee: gstPerfomanceFee,
+        // gstPerfomanceFee: gstPerfomanceFee,
         portfolioAfterPfee: portfolioAfterPfee,
         netReturn: netReturn,
       };
@@ -385,7 +386,7 @@ const Test = () => {
                 </td>
               ))}
             </tr>
-            <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
+            {/* <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
                 Less : GST on Fixed Management Fees (@ 18% of Fixed Management
                 Fees )
@@ -395,7 +396,7 @@ const Test = () => {
                   {formatNumberIndian(datas[year])?.gstMfee?.toLocaleString()}
                 </td>
               ))}
-            </tr>
+            </tr> */}
             <tr className="text-[14px] font-semibold border-b-[1px] border-b-black	leading-6 ">
               <td className="border-l-[0px] p-2">
                 Portfolio Value AFTER fixed Management Fees
@@ -426,7 +427,7 @@ const Test = () => {
                 </td>
               ))}
             </tr>
-            <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
+            {/* <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
                 Less : GST on Performance fees (@ 18% of Performance Fees )
               </td>
@@ -437,7 +438,7 @@ const Test = () => {
                   )?.toLocaleString()}
                 </td>
               ))}
-            </tr>
+            </tr> */}
             <tr className="text-[14px] font-semibold border-b-[1px] 	leading-6 ">
               <td className="border-l-[0px] p-2">
                 Net Value of the Portfolio at end of the year{" "}
