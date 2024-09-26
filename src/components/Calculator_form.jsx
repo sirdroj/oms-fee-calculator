@@ -89,7 +89,7 @@ const Test = () => {
             return tp
           }
           else{
-            return portfolioafterMfee
+            return portfolioafterMfee-perfomanceFee
           }
         }
 
@@ -99,7 +99,7 @@ const Test = () => {
             result=tp
           }
           else{
-            result=tgrossval-brokrageFee-custodyFee-perfomanceFee
+            result=tgrossval-brokrageFee-custodyFee-perfomanceFee-managementFee
           }
         }
         else{
@@ -501,7 +501,10 @@ const Test = () => {
               <td className="border-l-[0px] p-2">Net return to client </td>
               {yearList.map((year) => (
                 <td key={year} className="border-l-[1px] text-center">
-                  {formatNumberIndian(datas[year]?.netReturn)?.toLocaleString()}
+                  {/* {formatNumberIndian(datas[year]?.netReturn)?.toLocaleString()} */}
+                  
+                  {(Math.round(formatNumberIndian(datas[year]?.netReturn) * 100) / 100).toLocaleString()}
+
                   %
                 </td>
               ))}
