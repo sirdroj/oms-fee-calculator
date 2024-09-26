@@ -169,7 +169,7 @@ const Test = () => {
   }
 
   return (
-    <form className=" w- bg-white relative top-20 lg:top-[-100px] text-gray-700 lg:left-0 left-20 rounded-lg p-4 mx-10 border-[2px] overflow-visible">
+    <form className=" w-[1150px] bg-white relative top-20 lg:top-[-100px] text-gray-700 lg:left-0 left-20 rounded-lg p-4 mx-10 border-[2px] overflow-visible">
       <h1 className="text-center lexend-400 w-full">Fees Calculator</h1>
       {/* {hRate} */}
       <p className="text-base text-gray-900 text-center m-4">

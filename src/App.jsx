@@ -27,7 +27,7 @@ function App() {
         <img className="h-7 m-4" src="./images/mtlogo.png" />
       </nav>
       <div className="parallax hidden lg:block" style={parallaxStyle}></div>
-      <div className="w-max lg:w-full  z-20 p-2 flex justify-center  ">
+      <div className="w-[max] lg:w-full  z-20 p-2 flex justify-center  ">
        
         {/* <Test /> */}
         <Calculator_form />
